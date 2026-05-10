@@ -12,8 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = 'django-insecure-6xi+br(!fj@#k9u%=^vya&&0zryl%+m=as7goy7=lc*^$g0-ix'
 DEBUG = True
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['https://techblog-zlb5.onrender.com/']
 
 # 🔥 APPLICATIONS
 INSTALLED_APPS = [
