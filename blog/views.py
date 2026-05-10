@@ -3,7 +3,10 @@ from .models import Post
 from .forms import PostForm
 from django.core.paginator import Paginator
 
-# AUTH
+# 🔍 SEARCH
+from django.db.models import Q
+
+# 🔐 AUTH
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -14,11 +17,13 @@ def home(request):
     query = request.GET.get('q')
 
     if query:
-        posts = Post.objects.filter(title__icontains=query)
+        posts = Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query)
+        )
     else:
         posts = Post.objects.all()
 
-    paginator = Paginator(posts, 3)
+    paginator = Paginator(posts, 3)  # sayfa başına 3 post
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -47,12 +52,11 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
-# ✏️ UPDATE (LOGIN ZORUNLU)
+# ✏️ UPDATE (SADECE KENDİ POSTU)
 @login_required
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
 
-    # 👇 sadece kendi postunu düzenleyebilsin
     if post.author != request.user:
         return redirect('home')
 
@@ -67,12 +71,11 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
-# ❌ DELETE (LOGIN ZORUNLU)
+# ❌ DELETE (SADECE KENDİ POSTU)
 @login_required
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
 
-    # 👇 sadece kendi postunu silebilsin
     if post.author != request.user:
         return redirect('home')
 
@@ -86,7 +89,7 @@ def register(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # otomatik login
+            login(request, user)
             return redirect('home')
     else:
         form = UserCreationForm()
