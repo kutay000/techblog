@@ -2,15 +2,15 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY
+# 🔐 SECURITY
 SECRET_KEY = 'django-insecure-change-this-key'
-
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']   # Render için gerekli
+# 🌐 RENDER FIX
+ALLOWED_HOSTS = ['*']
 
 
-# APPLICATIONS
+# 📦 APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,11 +19,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'blog',   # 👈 kendi app'in
+    'blog',  # 👈 senin app
 ]
 
 
-# MIDDLEWARE
+# ⚙️ MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -38,15 +38,15 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'config.urls'
 
 
-# TEMPLATES
+# 🎨 TEMPLATES
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],   # app içinden okuyacak
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.request',  # 🔥 önemli
+                'django.template.context_processors.request',  # 🔥 login için gerekli
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
@@ -58,7 +58,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 
-# DATABASE
+# 🗄️ DATABASE
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -67,7 +67,7 @@ DATABASES = {
 }
 
 
-# PASSWORD VALIDATION
+# 🔑 PASSWORD VALIDATION
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -78,7 +78,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# LANGUAGE
+# 🌍 LANGUAGE
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
@@ -86,14 +86,15 @@ USE_I18N = True
 USE_TZ = True
 
 
-# STATIC FILES
+# 📁 STATIC
 STATIC_URL = 'static/'
 
 
-# LOGIN / LOGOUT
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+# 🔐 AUTH REDIRECTS
+LOGIN_URL = '/login/'          # login zorunlu sayfalar için
+LOGIN_REDIRECT_URL = '/'       # login sonrası
+LOGOUT_REDIRECT_URL = '/'      # logout sonrası
 
 
-# DEFAULT PRIMARY KEY
+# 🔢 DEFAULT ID
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -6,6 +6,7 @@ from django.core.paginator import Paginator
 # AUTH
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 
 
 # 🏠 HOME + SEARCH + PAGINATION
@@ -30,7 +31,8 @@ def post_detail(request, id):
     return render(request, 'detail.html', {'post': post})
 
 
-# ➕ CREATE
+# ➕ CREATE (LOGIN ZORUNLU)
+@login_required
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -45,9 +47,14 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
-# ✏️ UPDATE
+# ✏️ UPDATE (LOGIN ZORUNLU)
+@login_required
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
+
+    # 👇 sadece kendi postunu düzenleyebilsin
+    if post.author != request.user:
+        return redirect('home')
 
     if request.method == 'POST':
         form = PostForm(request.POST, instance=post)
@@ -60,9 +67,15 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
-# ❌ DELETE
+# ❌ DELETE (LOGIN ZORUNLU)
+@login_required
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
+
+    # 👇 sadece kendi postunu silebilsin
+    if post.author != request.user:
+        return redirect('home')
+
     post.delete()
     return redirect('home')
 
