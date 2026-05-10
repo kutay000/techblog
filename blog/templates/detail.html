@@ -5,6 +5,12 @@
 <div class="card p-3 mb-3">
     <h2>{{ post.title }}</h2>
     <p>{{ post.content }}</p>
+
+    <!-- 🔥 SADECE KENDİ POSTUNSA GÖRÜNÜR -->
+    {% if user == post.author %}
+        <a href="{% url 'update_post' post.id %}" class="btn btn-warning btn-sm">Edit</a>
+        <a href="{% url 'delete_post' post.id %}" class="btn btn-danger btn-sm">Delete</a>
+    {% endif %}
 </div>
 
 <hr>
@@ -15,6 +21,7 @@
     <div class="card p-2 mb-2">
         <strong>{{ comment.author.username }}</strong>
         <p>{{ comment.content }}</p>
+        <small>{{ comment.created_at }}</small>
     </div>
 {% empty %}
     <p>No comments yet.</p>
