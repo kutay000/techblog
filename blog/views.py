@@ -3,6 +3,12 @@ from .models import Post
 from .forms import PostForm
 from django.core.paginator import Paginator
 
+# AUTH
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+
+
+# 🏠 HOME + SEARCH + PAGINATION
 def home(request):
     query = request.GET.get('q')
 
@@ -11,18 +17,20 @@ def home(request):
     else:
         posts = Post.objects.all()
 
-    paginator = Paginator(posts, 3)  # sayfa başına 3 post
+    paginator = Paginator(posts, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'home.html', {'page_obj': page_obj})
 
 
+# 📄 DETAIL
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     return render(request, 'detail.html', {'post': post})
 
 
+# ➕ CREATE
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -37,6 +45,7 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
+# ✏️ UPDATE
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
 
@@ -51,7 +60,22 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
+# ❌ DELETE
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
     post.delete()
     return redirect('home')
+
+
+# 🔐 REGISTER
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # otomatik login
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'register.html', {'form': form})

@@ -1,44 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tech Blog</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-<h1>Tech Blog</h1>
+{% block content %}
 
-<!-- SEARCH -->
-<form method="GET">
-    <input type="text" name="q" placeholder="Search...">
-    <button type="submit">Search</button>
+<h1 class="mb-3">Tech Blog</h1>
+
+<form method="GET" class="mb-3">
+    <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="form-control mb-2">
+    <button class="btn btn-dark">Search</button>
 </form>
 
-<a href="{% url 'create_post' %}">+ New Post</a>
+<a href="{% url 'create_post' %}" class="btn btn-success mb-3">+ New Post</a>
 
 {% for post in page_obj %}
-    <h2>
-        <a href="{% url 'post_detail' post.id %}">
-            {{ post.title }}
-        </a>
-    </h2>
-    <p>{{ post.content }}</p>
-    <hr>
+    <div class="card mb-3 p-3">
+        <h4>
+            <a href="{% url 'post_detail' post.id %}">
+                {{ post.title }}
+            </a>
+        </h4>
+        <p>{{ post.content|truncatewords:15 }}</p>
+    </div>
 {% endfor %}
 
-<!-- PAGINATION -->
-<div>
-    {% if page_obj.has_previous %}
-        <a href="?page=1">First</a>
-        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
-    {% endif %}
-
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
-    {% endif %}
-</div>
-
-</body>
-</html>
+{% endblock %}
