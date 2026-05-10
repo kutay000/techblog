@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tech Blog</title>
+</head>
+<body>
+
+<h1>Tech Blog</h1>
+
+<!-- SEARCH -->
+<form method="GET">
+    <input type="text" name="q" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+
+<a href="{% url 'create_post' %}">+ New Post</a>
+
+{% for post in page_obj %}
+    <h2>
+        <a href="{% url 'post_detail' post.id %}">
+            {{ post.title }}
+        </a>
+    </h2>
+    <p>{{ post.content }}</p>
+    <hr>
+{% endfor %}
+
+<!-- PAGINATION -->
+<div>
+    {% if page_obj.has_previous %}
+        <a href="?page=1">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+</div>
+
+</body>
+</html>
