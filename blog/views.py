@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 from django.core.paginator import Paginator
 
 # 🔍 SEARCH
@@ -12,14 +12,14 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 
-# 🏠 HOME + SEARCH + PAGINATION (FIXED)
+# 🏠 HOME + SEARCH + PAGINATION
 def home(request):
     query = request.GET.get('q')
 
     if query:
         posts = Post.objects.filter(
             Q(title__icontains=query) | Q(content__icontains=query)
-        ).order_by('-id')   # 🔥 en yeni üstte
+        ).order_by('-id')
     else:
         posts = Post.objects.all().order_by('-id')
 
@@ -33,10 +33,30 @@ def home(request):
     })
 
 
-# 📄 DETAIL
+# 📄 DETAIL + COMMENTS
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
-    return render(request, 'detail.html', {'post': post})
+    comments = Comment.objects.filter(post=post).order_by('-id')
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.author = request.user
+                comment.save()
+                return redirect('post_detail', id=post.id)
+        else:
+            return redirect('login')
+    else:
+        form = CommentForm()
+
+    return render(request, 'detail.html', {
+        'post': post,
+        'comments': comments,
+        'form': form
+    })
 
 
 # ➕ CREATE
@@ -55,7 +75,7 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
-# ✏️ UPDATE
+# ✏️ UPDATE (SADECE KENDİ POSTU)
 @login_required
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
@@ -74,7 +94,7 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
-# ❌ DELETE
+# ❌ DELETE (SADECE KENDİ POSTU)
 @login_required
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
