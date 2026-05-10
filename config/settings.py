@@ -93,7 +93,7 @@ STATIC_URL = 'static/'
 # 🔐 AUTH REDIRECTS
 LOGIN_URL = '/login/'          # login zorunlu sayfalar için
 LOGIN_REDIRECT_URL = '/'       # login sonrası
-LOGOUT_REDIRECT_URL = '/'      # logout sonrası
+LOGOUT_REDIRECT_URL = '/login'      # logout sonrası
 
 
 # 🔢 DEFAULT ID
