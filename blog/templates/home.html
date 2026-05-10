@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1 class="mb-3">Tech Blog</h1>
+<h1>Tech Blog</h1>
 
 <form method="GET" class="mb-3">
     <input type="text" name="q" value="{{ query }}" placeholder="Search..." class="form-control mb-2">
@@ -12,29 +12,35 @@
 <a href="{% url 'create_post' %}" class="btn btn-success mb-3">+ New Post</a>
 
 {% for post in page_obj %}
-    <div class="card mb-3 p-3">
-        <h4>
-            <a href="{% url 'post_detail' post.id %}">
-                {{ post.title }}
-            </a>
-        </h4>
-        <p>{{ post.content|truncatewords:15 }}</p>
-    </div>
+<div class="card p-3 mb-3">
+    <h4>
+        <a href="{% url 'post_detail' post.id %}">
+            {{ post.title }}
+        </a>
+    </h4>
+
+    <p>{{ post.content|truncatewords:20 }}</p>
+
+    <p class="text-muted">
+        Yazar: {{ post.author.username }}
+    </p>
+</div>
 {% endfor %}
 
-<!-- PAGINATION FIX -->
-<div>
+
+<!-- 🔥 PAGINATION -->
+<div class="mt-3">
 
     {% if page_obj.has_previous %}
-        <a href="?q={{ query }}&page=1">First</a>
-        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+        <a href="?page=1{% if query %}&q={{ query }}{% endif %}">First</a>
+        <a href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}">Back</a>
     {% endif %}
 
-    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    <span> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} </span>
 
     {% if page_obj.has_next %}
-        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
-        <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">Last</a>
+        <a href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}">Next</a>
+        <a href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}">Last</a>
     {% endif %}
 
 </div>

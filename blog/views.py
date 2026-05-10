@@ -2,17 +2,12 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post, Comment
 from .forms import PostForm, CommentForm
 from django.core.paginator import Paginator
-
-# 🔍 SEARCH
 from django.db.models import Q
-
-# 🔐 AUTH
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 
-# 🏠 HOME + SEARCH + PAGINATION
 def home(request):
     query = request.GET.get('q')
 
@@ -33,7 +28,6 @@ def home(request):
     })
 
 
-# 📄 DETAIL + COMMENTS
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
     comments = Comment.objects.filter(post=post).order_by('-id')
@@ -59,7 +53,6 @@ def post_detail(request, id):
     })
 
 
-# ➕ CREATE
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -75,7 +68,6 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
-# ✏️ UPDATE (SADECE KENDİ POSTU)
 @login_required
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
@@ -94,7 +86,6 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
-# ❌ DELETE (SADECE KENDİ POSTU)
 @login_required
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
@@ -106,7 +97,6 @@ def delete_post(request, id):
     return redirect('home')
 
 
-# 🔐 REGISTER
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
