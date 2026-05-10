@@ -5,7 +5,7 @@
 <h1 class="mb-3">Tech Blog</h1>
 
 <form method="GET" class="mb-3">
-    <input type="text" name="q" placeholder="Search..." value="{{ request.GET.q }}" class="form-control mb-2">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search..." class="form-control mb-2">
     <button class="btn btn-dark">Search</button>
 </form>
 
@@ -21,5 +21,22 @@
         <p>{{ post.content|truncatewords:15 }}</p>
     </div>
 {% endfor %}
+
+<!-- PAGINATION FIX -->
+<div>
+
+    {% if page_obj.has_previous %}
+        <a href="?q={{ query }}&page=1">First</a>
+        <a href="?q={{ query }}&page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+
+    {% if page_obj.has_next %}
+        <a href="?q={{ query }}&page={{ page_obj.next_page_number }}">Next</a>
+        <a href="?q={{ query }}&page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif %}
+
+</div>
 
 {% endblock %}

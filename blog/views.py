@@ -12,22 +12,25 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 
 
-# 🏠 HOME + SEARCH + PAGINATION
+# 🏠 HOME + SEARCH + PAGINATION (FIXED)
 def home(request):
     query = request.GET.get('q')
 
     if query:
         posts = Post.objects.filter(
             Q(title__icontains=query) | Q(content__icontains=query)
-        )
+        ).order_by('-id')   # 🔥 en yeni üstte
     else:
-        posts = Post.objects.all()
+        posts = Post.objects.all().order_by('-id')
 
-    paginator = Paginator(posts, 3)  # sayfa başına 3 post
+    paginator = Paginator(posts, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    return render(request, 'home.html', {'page_obj': page_obj})
+    return render(request, 'home.html', {
+        'page_obj': page_obj,
+        'query': query
+    })
 
 
 # 📄 DETAIL
@@ -36,7 +39,7 @@ def post_detail(request, id):
     return render(request, 'detail.html', {'post': post})
 
 
-# ➕ CREATE (LOGIN ZORUNLU)
+# ➕ CREATE
 @login_required
 def create_post(request):
     if request.method == 'POST':
@@ -52,7 +55,7 @@ def create_post(request):
     return render(request, 'create.html', {'form': form})
 
 
-# ✏️ UPDATE (SADECE KENDİ POSTU)
+# ✏️ UPDATE
 @login_required
 def update_post(request, id):
     post = get_object_or_404(Post, id=id)
@@ -71,7 +74,7 @@ def update_post(request, id):
     return render(request, 'update.html', {'form': form})
 
 
-# ❌ DELETE (SADECE KENDİ POSTU)
+# ❌ DELETE
 @login_required
 def delete_post(request, id):
     post = get_object_or_404(Post, id=id)
