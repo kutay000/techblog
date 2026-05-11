@@ -65,7 +65,7 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.parse(
-        "postgresql://postgres:techblog456852@db.jhtxuhtyordcgpgkqvgt.supabase.co:5432/postgres",
+        "postgresql://postgres.jhtxuhtyordcgpgkqvgt:techblog456852@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres",
         conn_max_age=600,
         ssl_require=True
     )
