@@ -94,8 +94,3 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-from django.contrib.auth.models import User
-
-if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@mail.com', '123456')
